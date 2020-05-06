@@ -1,6 +1,5 @@
 [wrap-file]
-directory = check-0.10.0
+directory = check-0.14.0
 
-source_url = http://vorboss.dl.sourceforge.net/project/check/check/0.10.0/check-0.10.0.tar.gz
-source_filename = check-0.10.0.tar.gz
-source_hash = f5f50766aa6f8fe5a2df752666ca01a950add45079aa06416b83765b1cf71052
+source_url = https://github.com/libcheck/check/archive/0.14.0.tar.gz
+source_filename = check-0.14.0.tar.gz
