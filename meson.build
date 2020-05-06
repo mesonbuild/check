@@ -116,7 +116,7 @@ if not cc.has_type('timer_t')
   cdata.set('timer_t', 'int')
 endif
 
-librt = find_library('rt', required : false)
+librt = dependency('rt', required : false)
 if librt.found()
    cdata.set('HAVE_LIBRT', 1)
 endif
