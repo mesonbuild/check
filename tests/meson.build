@@ -17,7 +17,7 @@ tests = [
 
 foreach t : tests
   exe = executable(t.get(0), t.get(1),
-    c_args: [cstd, '-DHAVE_CONFIG_H=1', '-DTIMEOUT_TESTS_ENABLED=0'],
+    c_args: ['-DHAVE_CONFIG_H=1', '-DTIMEOUT_TESTS_ENABLED=0'],
     include_directories: confinc,
     dependencies : check_dep,
     )

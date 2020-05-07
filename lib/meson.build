@@ -14,7 +14,8 @@ endif
 
 compatlib = build_target('compat',
   sources,
-  c_args: [cstd, '-DHAVE_CONFIG_H=1'],
+  c_args: '-DHAVE_CONFIG_H=1',
+  dependencies : [librt],
   include_directories : [confinc],
   target_type : libtype,
 )

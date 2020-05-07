@@ -18,7 +18,8 @@ endif
 
 checklib = build_target('check',
   sources,
-  c_args: [cstd, '-DHAVE_CONFIG_H=1'],
+  c_args: '-DHAVE_CONFIG_H=1',
   include_directories : [confinc],
+  dependencies : libm,
   target_type : libtype,
 )
