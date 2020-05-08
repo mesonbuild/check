@@ -1,1 +1,2 @@
 option('shared_lib', type : 'boolean', value : false)
+option('unused_tests', type : 'boolean', value : false)
