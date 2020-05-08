@@ -1,3 +1,15 @@
+configure_file(
+  input : 'check.h.in',
+  output : 'check.h',
+  configuration : cdata,
+)
+
+configure_file(
+  input : '../meson/check_stdint.h.in',
+  output : 'check_stdint.h',
+  configuration : cdata,
+)
+
 sources = [
   'check.c',
   'check_error.c',

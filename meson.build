@@ -1,7 +1,20 @@
-project('check', 'c')
+project('check', 'c',
+  version : '0.14.0',
+  license : 'lgpl-2.1',
+)
+
+check_version = meson.project_version()
 
 cc = meson.get_compiler('c')
-cdata = configuration_data()
+cdata = configuration_data({
+  'PROJECT_NAME' : meson.project_name(),
+  'PROJECT_VERSION' : meson.project_version(),
+  'MESON_VERSION' : meson.version(),
+  'CHECK_MAJOR_VERSION' : check_version.split('.')[0],
+  'CHECK_MINOR_VERSION' : check_version.split('.')[1],
+  'CHECK_MICRO_VERSION' : check_version.split('.')[2],
+})
+
 check_headers = [
   ['HAVE_DLFCN_H', 'dlfcn.h'],
   ['HAVE_ERRNO_H', 'errno.h'],
