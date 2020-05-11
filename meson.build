@@ -19,15 +19,13 @@ cc = meson.get_compiler('c')
 ###############################################################################
 # Per-compiler/platform additional flags
 if host_machine.system() == 'windows'
-  if cc.get_id() == 'msvc'
+  add_global_arguments([
+    '-D_CRT_SECURE_NO_DEPRECATE',
+    '-D_CRT_SECURE_NO_WARNINGS',
+    '-D_CRT_NONSTDC_NO_WARNINGS',
+    ], language : 'c')
+  if cc.get_id() == 'clang-cl'
     add_global_arguments([
-      '-D_CRT_SECURE_NO_DEPRECATE',
-      '-D_CRT_SECURE_NO_WARNINGS',
-      '-D_CRT_NONSTDC_NO_WARNINGS',
-      ], language : 'c')
-  elif cc.get_id() == 'clang-cl'
-    add_global_arguments([
-        '-Wno-deprecated-declarations',
         '-fcolor-diagnostics',
         '-fansi-escape-codes',
       ], language : 'c')
