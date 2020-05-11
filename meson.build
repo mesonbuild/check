@@ -4,19 +4,38 @@ project('check', 'c',
   license : 'lgpl-2.1',
 )
 
-check_version = meson.project_version()
-
-if host_machine.system() == 'windows'
-  add_global_arguments([
-    '-fcolor-diagnostics',
-    '-fansi-escape-codes',
-    '-D_CRT_SECURE_NO_DEPRECATE',
-    '-D_CRT_SECURE_NO_WARNINGS',
-    '-D_CRT_NONSTDC_NO_WARNINGS',
-    ], language : 'c')
-endif
 
 cc = meson.get_compiler('c')
+
+if host_machine.system() == 'windows'
+  if cc.get_id() == 'msvc'
+    add_global_arguments([
+      '-D_CRT_SECURE_NO_DEPRECATE',
+      '-D_CRT_SECURE_NO_WARNINGS',
+      '-D_CRT_NONSTDC_NO_WARNINGS',
+      ], language : 'c')
+  elif cc.get_id() == 'clang-cl'
+    add_global_arguments([
+        '-Wno-deprecated-declarations',
+        '-fcolor-diagnostics',
+        '-fansi-escape-codes',
+      ], language : 'c')
+  endif
+endif
+
+
+if get_option('shared_lib')
+  libtype = 'shared_library'
+  ck_dll_exp_interface = '-DCK_DLL_EXP=__declspec(dllimport)'
+  ck_dll_exp_private = '-DCK_DLL_EXP=__declspec(dllexport)'
+else
+  libtype = 'static_library'
+  ck_dll_exp_interface = ''
+  ck_dll_exp_private = ''
+endif
+
+
+check_version = meson.project_version()
 cdata = configuration_data({
   'PROJECT_NAME' : meson.project_name(),
   'PROJECT_VERSION' : meson.project_version(),
@@ -369,11 +388,13 @@ configure_file(input : 'config.h.meson',
 
 confinc = include_directories('.')
 
-
-subdir('src')
 subdir('lib')
+subdir('src')
 
-check_dep = declare_dependency(include_directories : include_directories('src'),
-  link_with : [checklib, compatlib])
+check_dep = declare_dependency(
+  include_directories : include_directories('src'),
+  link_with : checklib,
+  compile_args : ck_dll_exp_interface,
+)
 
 subdir('tests')

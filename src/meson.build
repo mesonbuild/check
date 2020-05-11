@@ -22,16 +22,10 @@ sources = [
   'check_str.c',
 ]
 
-if get_option('shared_lib')
-  libtype = 'shared_library'
-else
-  libtype = 'static_library'
-endif
-
 checklib = build_target('check',
   sources,
-  c_args: '-DHAVE_CONFIG_H=1',
+  c_args: ['-DHAVE_CONFIG_H=1', ck_dll_exp_private],
   include_directories : [confinc],
-  dependencies : libm,
+  dependencies : [libm, compatlib_dep],
   target_type : libtype,
 )
