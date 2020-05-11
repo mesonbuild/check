@@ -6,6 +6,16 @@ project('check', 'c',
 
 check_version = meson.project_version()
 
+if host_machine.system() == 'windows'
+  add_global_arguments([
+    '-fcolor-diagnostics',
+    '-fansi-escape-codes',
+    '-D_CRT_SECURE_NO_DEPRECATE',
+    '-D_CRT_SECURE_NO_WARNINGS',
+    '-D_CRT_NONSTDC_NO_WARNINGS',
+    ], language : 'c')
+endif
+
 cc = meson.get_compiler('c')
 cdata = configuration_data({
   'PROJECT_NAME' : meson.project_name(),
@@ -305,7 +315,7 @@ if not cdata.has('HAVE_SYS_TIME_H')
       cdata.set('HAVE_STRUCT_ITIMERSPEC_IT_VALUE', true)
     endif
 
-    if (not cdata.has('HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC') 
+    if (not cdata.has('HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC')
         and not cdata.has('HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC'))
       cdata.set('STRUCT_TIMESPEC_DEFINITION_MISSING', 1)
       add_global_arguments(
