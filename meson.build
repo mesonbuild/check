@@ -1,4 +1,5 @@
 project('check', 'c',
+  default_options : ['warning_level=0'],
   version : '0.14.0',
   license : 'lgpl-2.1',
 )
@@ -58,7 +59,7 @@ check_functions = [
 # check token HAVE_DECL_TIMER_CREATE
 # check token HAVE_DECL_TIMER_DELETE
 # check token HAVE_DECL_TIMER_SETTIME
-  ['HAVE_FORK', 'fork', '#include <unistd.h>', 0],
+  ['HAVE_FORK', 'fork', '#include <unistd.h>'],
   ['HAVE_GETLINE', 'getline', '#include <stdio.h>'],
   ['HAVE_GETTIMEOFDAY', 'gettimeofday', '#include <sys/time.h>'],
 # check token HAVE_INTMAX_T
@@ -102,8 +103,6 @@ foreach f : check_functions
   header = f[2]
   if cc.has_function(function, prefix : header)
     cdata.set(variable, 1)
-  elif f.length() == 4
-    cdata.set(variable, f[3])
   endif
 endforeach
 
@@ -152,21 +151,6 @@ if cdata.has('HAVE_REGCOMP') and cdata.has('HAVE_REGEXEC')
   add_global_arguments('-DENABLE_REGEX=1', language : 'c')
 endif
 # /Some check-specific definitions
-
-
-b1 = cc.has_member('struct timespec', 'tv_nsec', prefix : '#include <time.h>')
-b2 = cc.has_member('struct timespec', 'tv_sec', prefix : '#include <time.h>')
-if not b1 or not b2
-  cdata.set('STRUCT_TIMESPEC_DEFINITION_MISSING', 1)
-endif
-
-b1 = cc.has_member('struct itimerspec', 'it_interval', prefix : '#include <time.h>')
-b2 = cc.has_member('struct itimerspec', 'it_value', prefix : '#include <time.h>')
-if not b1 or not b2
-  cdata.set('STRUCT_ITIMERSPEC_DEFINITION_MISSING', 1)
-endif
-
-# check token HAVE_STRUCT_TIMESPEC_TV_SEC
 
 ###############################################################################
 # Check for integer types
@@ -322,19 +306,19 @@ if not cdata.has('HAVE_SYS_TIME_H')
     endif
 
     if (not cdata.has('HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC') 
-        and not cc.has('HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC'))
+        and not cdata.has('HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC'))
       cdata.set('STRUCT_TIMESPEC_DEFINITION_MISSING', 1)
       add_global_arguments(
         '-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1',
-        language : ['c', 'cpp']
+        language : 'c'
       )
     endif
 
     if not cdata.has('HAVE_STRUCT_ITIMERSPEC_IT_VALUE')
-      cdata.set('STRUCT_TIMESPEC_DEFINITION_MISSING', 1)
+      cdata.set('STRUCT_ITIMERSPEC_DEFINITION_MISSING', 1)
       add_global_arguments(
-        '-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1',
-        language : ['c', 'cpp']
+        '-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1',
+        language : 'c'
       )
     endif
   endif
