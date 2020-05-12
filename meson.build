@@ -341,11 +341,7 @@ endif
 
 ###############################################################################
 # Generate "config.h" from "cmake/config.h.in"
-configure_file(input : 'config.h.meson',
-  output : 'config.h',
-  configuration : cdata)
-
-confinc = include_directories('.')
+subdir('internal')
 
 subdir('lib')
 subdir('src')
