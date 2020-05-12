@@ -14,9 +14,10 @@ configure_file(
 )
 
 configure_file(
-  input : '../meson/check_stdint.h.in',
+  input : '../cmake/check_stdint.h.in',
   output : 'check_stdint.h',
   configuration : cdata,
+  format : 'cmake',
 )
 
 sources = [
