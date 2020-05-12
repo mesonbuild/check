@@ -1,12 +1,23 @@
 project('check', 'c',
-  default_options : ['warning_level=0'],
+  default_options : ['warning_level=0', 'default_library=static'],
   version : '0.14.0',
-  license : 'lgpl-2.1',
+  license : 'LGPL2.1',
 )
 
+check_version = meson.project_version()
+cdata = configuration_data({
+  'PROJECT_NAME' : meson.project_name(),
+  'PROJECT_VERSION' : meson.project_version(),
+  'MESON_VERSION' : meson.version(),
+  'CHECK_MAJOR_VERSION' : check_version.split('.')[0],
+  'CHECK_MINOR_VERSION' : check_version.split('.')[1],
+  'CHECK_MICRO_VERSION' : check_version.split('.')[2],
+})
 
 cc = meson.get_compiler('c')
 
+###############################################################################
+# Per-compiler/platform additional flags
 if host_machine.system() == 'windows'
   if cc.get_id() == 'msvc'
     add_global_arguments([
@@ -23,28 +34,7 @@ if host_machine.system() == 'windows'
   endif
 endif
 
-
-if get_option('shared_lib')
-  libtype = 'shared_library'
-  ck_dll_exp_interface = '-DCK_DLL_EXP=__declspec(dllimport)'
-  ck_dll_exp_private = '-DCK_DLL_EXP=__declspec(dllexport)'
-else
-  libtype = 'static_library'
-  ck_dll_exp_interface = ''
-  ck_dll_exp_private = ''
-endif
-
-
-check_version = meson.project_version()
-cdata = configuration_data({
-  'PROJECT_NAME' : meson.project_name(),
-  'PROJECT_VERSION' : meson.project_version(),
-  'MESON_VERSION' : meson.version(),
-  'CHECK_MAJOR_VERSION' : check_version.split('.')[0],
-  'CHECK_MINOR_VERSION' : check_version.split('.')[1],
-  'CHECK_MICRO_VERSION' : check_version.split('.')[2],
-})
-
+###############################################################################
 check_headers = [
   ['HAVE_DLFCN_H', 'dlfcn.h'],
   ['HAVE_ERRNO_H', 'errno.h'],
@@ -76,54 +66,28 @@ foreach h : check_headers
   endif
 endforeach
 
+###############################################################################
 check_functions = [
-  ['HAVE_DECL_ALARM', 'alarm', '#include <unistd.h>'],
-# check token HAVE_ASPRINTF
   ['HAVE_CLOCK_GETTIME', 'clock_gettime', '#include <time.h>'],
-  ['HAVE_GETPID', 'getpid', '#include <unistd.h>'],
-# check token HAVE_DECL_CLOCK_GETTIME
-# check token HAVE_DECL_GETLINE_GETTIMEOFDAY
+  ['HAVE_DECL_ALARM', 'alarm', '#include <unistd.h>'],
+  ['HAVE_DECL_LOCALTIME_R', 'localtime_r', '#include <time.h>'],
   ['HAVE_DECL_SETENV', 'setenv', '#include <stdlib.h>'],
   ['HAVE_DECL_STRDUP', 'strdup', '#include <string.h>'],
-# check token HAVE_DECL_TIMER_CREATE
-# check token HAVE_DECL_TIMER_DELETE
-# check token HAVE_DECL_TIMER_SETTIME
+  ['HAVE_DECL_STRSIGNAL', 'strsignal', '#include <signal.h>'],
   ['HAVE_FORK', 'fork', '#include <unistd.h>'],
   ['HAVE_GETLINE', 'getline', '#include <stdio.h>'],
+  ['HAVE_GETPID', 'getpid', '#include <unistd.h>'],
   ['HAVE_GETTIMEOFDAY', 'gettimeofday', '#include <sys/time.h>'],
-# check token HAVE_INTMAX_T
-# check token HAVE_LIBM
-# check token HAVE_LIBRT
-# check token HAVE_LOCALECONV
-  ['HAVE_DECL_LOCALTIME_R', 'localtime_r', '#include <time.h>'],
-# check token HAVE_LONG_DOUBLE
-# check token HAVE_LONG_LONG_INT
   ['HAVE_MALLOC', 'malloc', '#include <stdlib.h>'],
   ['HAVE_MKSTEMP', 'mkstemp', '#include <stdlib.h>'],
-# check token HAVE_PTHREAD
-# check token HAVE_PTRDIFF_T
   ['HAVE_REALLOC', 'realloc', '#include <stdlib.h>'],
-# check token HAVE_SETITIMER
+  ['HAVE_REGCOMP', 'regcomp', '#include <regex.h>'],
+  ['HAVE_REGEXEC', 'regexec', '#include <regex.h>'],
   ['HAVE_SIGACTION', 'sigaction', '#include <signal.h>'],
   ['HAVE_SNPRINTF', 'snprintf', '#include <stdio.h>'],
-# check token HAVE_STRDUP
-  ['HAVE_DECL_STRSIGNAL', 'strsignal', '#include <signal.h>'],
-# check token HAVE_STRUCT_ITIMERSPEC_IT_INTERVAL
-# check token HAVE_STRUCT_ITIMERSPEC_IT_VALUE
-# check token HAVE_STRUCT_LCONV_DECIMAL_POINT
-# check token HAVE_STRUCT_LCONV_THOUSANDS_SEP
-# check token HAVE_TIMER_CREATE
-# check token HAVE_TIMER_DELETE
-# check token HAVE_TIMER_SETTIME
-# check token HAVE_UINTMAX_T
-# check token HAVE_UINTPTR_T
-# check token HAVE_UNSIGNED_LONG_LONG_INT
   ['HAVE_VASPRINTF', 'vasprintf', '#include <stdio.h>'],
   ['HAVE_VA_COPY', 'va-copy', '#include <stdarg.h>'],
   ['HAVE_VSNPRINTF', 'vsnprintf', '#include <stdio.h>'],
-  ['HAVE_REGCOMP', 'regcomp', '#include <regex.h>'],
-  ['HAVE_REGEXEC', 'regexec', '#include <regex.h>'],
-# check token HAVE___VA_COPY
 ]
 
 foreach f : check_functions
@@ -277,7 +241,6 @@ endif
 
 ###############################################################################
 # Check libraries
-
 int_types_check = [
   'int16_t',
   'int32_t',
@@ -355,7 +318,6 @@ endif
 
 ###############################################################################
 # Check libraries
-
 libm = cc.find_library('m', required : false)
 if libm.found() and cc.has_header_symbol('math.h', 'floor')
   cdata.set('LIBM', 'm')
@@ -381,7 +343,6 @@ endif
 
 ###############################################################################
 # Generate "config.h" from "cmake/config.h.in"
-
 configure_file(input : 'config.h.meson',
   output : 'config.h',
   configuration : cdata)
@@ -390,11 +351,5 @@ confinc = include_directories('.')
 
 subdir('lib')
 subdir('src')
-
-check_dep = declare_dependency(
-  include_directories : include_directories('src'),
-  link_with : checklib,
-  compile_args : ck_dll_exp_interface,
-)
 
 subdir('tests')

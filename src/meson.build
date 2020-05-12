@@ -1,3 +1,12 @@
+if get_option('default_library') == 'shared'
+  ck_dll_exp_interface = '-DCK_DLL_EXP=__declspec(dllimport)'
+  ck_dll_exp_private = '-DCK_DLL_EXP=__declspec(dllexport)'
+else
+  ck_dll_exp_interface = ''
+  ck_dll_exp_private = ''
+endif
+
+
 configure_file(
   input : 'check.h.in',
   output : 'check.h',
@@ -22,10 +31,15 @@ sources = [
   'check_str.c',
 ]
 
-checklib = build_target('check',
+checklib = library('check',
   sources,
   c_args: ['-DHAVE_CONFIG_H=1', ck_dll_exp_private],
   include_directories : [confinc],
   dependencies : [libm, compatlib_dep],
-  target_type : libtype,
+)
+
+check_dep = declare_dependency(
+  include_directories : include_directories('.'),
+  link_with : checklib,
+  compile_args : ck_dll_exp_interface,
 )

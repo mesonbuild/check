@@ -1,5 +1,5 @@
 /*-*- mode:C; -*- */
-/* config.h.  Generated from build/meson/config.h.in by cmake configure */
+/* config.h.  Generated from config.h.meson by meson configure_file */
 /*
  * Check: a unit test framework for C
  *
