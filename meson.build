@@ -19,13 +19,13 @@ cc = meson.get_compiler('c')
 ###############################################################################
 # Per-compiler/platform additional flags
 if host_machine.system() == 'windows'
-  add_global_arguments([
+  add_project_arguments([
     '-D_CRT_SECURE_NO_DEPRECATE',
     '-D_CRT_SECURE_NO_WARNINGS',
     '-D_CRT_NONSTDC_NO_WARNINGS',
     ], language : 'c')
   if cc.get_id() == 'clang-cl'
-    add_global_arguments([
+    add_project_arguments([
         '-fcolor-diagnostics',
         '-fansi-escape-codes',
       ], language : 'c')
@@ -101,45 +101,45 @@ endforeach
 # Some check-specific definitions
 if not cdata.has('HAVE_VSNPRINTF') and not cdata.has('HAVE_SNPRINTF')
   cdata.set('snprintf', 'rpl_snprintf')
-  add_global_arguments('-Dsnprintf=rpl_snprintf', language : 'c')
+  add_project_arguments('-Dsnprintf=rpl_snprintf', language : 'c')
   cdata.set('vsnprintf', 'rpl_vsnprintf')
-  add_global_arguments('-Dvsnprintf=rpl_vsnprintf', language : 'c')
+  add_project_arguments('-Dvsnprintf=rpl_vsnprintf', language : 'c')
 else
   cdata.set('HAVE_SNPRINTF', 1)
-  add_global_arguments('-DHAVE_SNPRINTF=1', language : 'c')
+  add_project_arguments('-DHAVE_SNPRINTF=1', language : 'c')
   cdata.set('HAVE_VSNPRINTF', 1)
-  add_global_arguments('-DHAVE_VSNPRINTF=1', language : 'c')
+  add_project_arguments('-DHAVE_VSNPRINTF=1', language : 'c')
 endif
 
 if cdata.has('HAVE_FORK')
   cdata.set('HAVE_FORK', 1)
-  add_global_arguments('-DHAVE_FORK=1', language : 'c')
+  add_project_arguments('-DHAVE_FORK=1', language : 'c')
 else
   cdata.set('HAVE_FORK', 0)
-  add_global_arguments('-DHAVE_FORK=0', language : 'c')
+  add_project_arguments('-DHAVE_FORK=0', language : 'c')
 endif
 
 if cdata.has('HAVE_MKSTEMP')
   cdata.set('HAVE_MKSTEMP', 1)
-  add_global_arguments('-DHAVE_MKSTEMP=1', language : 'c')
+  add_project_arguments('-DHAVE_MKSTEMP=1', language : 'c')
 else
   cdata.set('HAVE_MKSTEMP', 0)
-  add_global_arguments('-DHAVE_MKSTEMP=0', language : 'c')
+  add_project_arguments('-DHAVE_MKSTEMP=0', language : 'c')
 endif
 
 if cdata.has('HAVE_DECL_ALARM')
   cdata.set('HAVE_DECL_ALARM', 1)
-  add_global_arguments('-DHAVE_DECL_ALARM=1', language : 'c')
+  add_project_arguments('-DHAVE_DECL_ALARM=1', language : 'c')
 else
   cdata.set('HAVE_DECL_ALARM', 0)
-  add_global_arguments('-DHAVE_DECL_ALARM=0', language : 'c')
+  add_project_arguments('-DHAVE_DECL_ALARM=0', language : 'c')
 endif
 
 if cdata.has('HAVE_REGCOMP') and cdata.has('HAVE_REGEXEC')
   cdata.set('HAVE_REGEX', 1)
-  add_global_arguments('-DHAVE_REGEX=1', language : 'c')
+  add_project_arguments('-DHAVE_REGEX=1', language : 'c')
   cdata.set('ENABLE_REGEX', 1)
-  add_global_arguments('-DENABLE_REGEX=1', language : 'c')
+  add_project_arguments('-DENABLE_REGEX=1', language : 'c')
 endif
 # /Some check-specific definitions
 
@@ -298,7 +298,7 @@ if not cdata.has('HAVE_SYS_TIME_H')
     if (not cdata.has('HAVE_WINSOCK2_H_STRUCT_TIMESPEC_TV_SEC')
         and not cdata.has('HAVE_TIME_H_STRUCT_TIMESPEC_TV_SEC'))
       cdata.set('STRUCT_TIMESPEC_DEFINITION_MISSING', 1)
-      add_global_arguments(
+      add_project_arguments(
         '-DSTRUCT_TIMESPEC_DEFINITION_MISSING=1',
         language : 'c'
       )
@@ -306,7 +306,7 @@ if not cdata.has('HAVE_SYS_TIME_H')
 
     if not cdata.has('HAVE_STRUCT_ITIMERSPEC_IT_VALUE')
       cdata.set('STRUCT_ITIMERSPEC_DEFINITION_MISSING', 1)
-      add_global_arguments(
+      add_project_arguments(
         '-DSTRUCT_ITIMERSPEC_DEFINITION_MISSING=1',
         language : 'c'
       )
@@ -326,17 +326,17 @@ librt = cc.find_library('rt', required : false)
 if librt.found() and cc.has_header_symbol('time.h', 'clock_gettime')
   cdata.set('LIBRT', 'rt')
   cdata.set('HAVE_LIBRT', 1)
-  add_global_arguments('-DHAVE_LIBRT=1', language : 'c')
+  add_project_arguments('-DHAVE_LIBRT=1', language : 'c')
 endif
 
 libsubunit = cc.find_library('subunit', required: false)
 if libsubunit.found() and cc.has_header_symbol('subunit/child.h', 'subunit_test_start')
   cdata.set('SUBUNIT', 'subunit')
   cdata.set('ENABLE_SUBUNIT', 1)
-  add_global_arguments('-DENABLE_SUBUNIT=1', language : 'c')
+  add_project_arguments('-DENABLE_SUBUNIT=1', language : 'c')
 else
   cdata.set('ENABLE_SUBUNIT', 0)
-  add_global_arguments('-DENABLE_SUBUNIT=0', language : 'c')
+  add_project_arguments('-DENABLE_SUBUNIT=0', language : 'c')
 endif
 
 ###############################################################################
