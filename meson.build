@@ -346,4 +346,6 @@ subdir('internal')
 subdir('lib')
 subdir('src')
 
-subdir('tests')
+if not meson.is_subproject()
+  subdir('tests')
+endif
