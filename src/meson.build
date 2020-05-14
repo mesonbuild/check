@@ -2,8 +2,8 @@ if get_option('default_library') == 'shared'
   ck_dll_exp_interface = '-DCK_DLL_EXP=__declspec(dllimport)'
   ck_dll_exp_private = '-DCK_DLL_EXP=__declspec(dllexport)'
 else
-  ck_dll_exp_interface = ''
-  ck_dll_exp_private = ''
+  ck_dll_exp_interface = []
+  ck_dll_exp_private = []
 endif
 
 
