@@ -30,7 +30,7 @@ if not cdata.has('HAVE_DECL_STRDUP') and not cdata.has('HAVE__STRDUP')
   sources += files('strdup.c')
 endif
 
-compatlib = library('compat',
+compatlib = static_library('compat',
   sources,
   c_args: '-DHAVE_CONFIG_H=1',
   dependencies : librt,
