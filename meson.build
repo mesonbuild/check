@@ -1,6 +1,6 @@
 project('check', 'c',
   default_options : ['warning_level=0', 'default_library=static'],
-  version : '0.14.0',
+  version : '0.15.0',
   license : 'LGPL2.1',
 )
 
@@ -56,6 +56,8 @@ check_headers = [
   ['HAVE_TIME_H', 'time.h'],
   ['HAVE_UNISTD_H', 'unistd.h'],
   ['HAVE_VARARGS_H', 'varargs.h'],
+  ['HAVE_PTHREAD', 'pthread.h'],
+  ['HAVE_WINDOWS_H', 'windows.h'],
 ]
 
 foreach h : check_headers
@@ -86,6 +88,8 @@ check_functions = [
   ['HAVE_VASPRINTF', 'vasprintf', '#include <stdio.h>'],
   ['HAVE_VA_COPY', 'va-copy', '#include <stdarg.h>'],
   ['HAVE_VSNPRINTF', 'vsnprintf', '#include <stdio.h>'],
+  ['HAVE_INIT_ONCE_BEGIN_INITIALIZE', 'InitOnceBeginInitialize', '#include <windows.h>'],
+  ['HAVE_INIT_ONCE_COMPLETE', 'InitOnceComplete', '#include <windows.h>'],
 ]
 
 foreach f : check_functions
@@ -312,6 +316,11 @@ if not cdata.has('HAVE_SYS_TIME_H')
       )
     endif
   endif
+endif
+
+if cdata.has('HAVE_PTHREAD')
+  add_project_arguments('-pthread', language : 'c')
+  add_project_link_arguments('-pthread', language : 'c')
 endif
 
 ###############################################################################

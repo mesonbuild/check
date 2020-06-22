@@ -226,6 +226,12 @@ typedef uint64_t uintmax_t;
 /* Define to 1 if you have the <limits.h> header file. */
 #mesondefine HAVE_LIMITS_H
 
+/* Define to 1 if you have the <windows.h> header file. */
+#mesondefine HAVE_WINDOWS_H
+
+/* Define to 1 if you have pthreads support */
+#mesondefine HAVE_PTHREAD
+
 /* Define to 1 if you have the `localtime_r' function. */
 #mesondefine HAVE_DECL_LOCALTIME_R
 
@@ -391,6 +397,12 @@ typedef uint64_t uintmax_t;
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #mesondefine uintptr_t
+
+/* Define to 1 if we have the `HaveInitOnceBeginInitialize' function */
+#mesondefine HAVE_INIT_ONCE_BEGIN_INITIALIZE
+
+/* Define to 1 if we have the `HaveInitOnceComplete' function */
+#mesondefine HAVE_INIT_ONCE_COMPLETE
 
 // Mesonbuild's Wrap Dependency specific
 #mesondefine HAVE_DECL_ALARM

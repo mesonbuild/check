@@ -9,6 +9,10 @@ if not librt.found()
   )
 endif
 
+if build_machine.system() == 'windows'
+  sources += files('pthread_mutex.c')
+endif
+
 foreach function : [
         'getline',
         'gettimeofday',
